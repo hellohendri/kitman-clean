@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { Providers } from './provider';
+import Sidebar from './components/sidebar';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -16,9 +17,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className='antialiased'>
+    <html lang="en" className="antialiased">
       <body className={inter.className}>
-        <Providers>{children}</Providers>
+        <Providers>
+          <div className="flex flex-row">
+            <Sidebar />
+            {children}
+          </div>
+        </Providers>
       </body>
     </html>
   );

@@ -13,7 +13,7 @@ export const authConfig = {
         return Response.redirect(new URL('/dashboard', nextUrl));
       }
 
-      const protectedRoutes = ['/dashboard', '/service'];
+      const protectedRoutes = ['/dashboard', '/service', '/customer'];
       const isProtectedRoute = protectedRoutes.some((route) =>
         nextUrl.pathname.startsWith(route),
       );
