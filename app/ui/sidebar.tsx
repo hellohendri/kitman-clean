@@ -1,8 +1,15 @@
 'use client';
 
-import { Avatar } from '@nextui-org/react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import { Avatar } from '@nextui-org/react';
+
+interface sidebarProps {
+  username: string;
+  role: string;
+  avatarUrl: string | undefined;
+  logout: React.ReactNode;
+}
 
 interface SidebarItem {
   title: string;
@@ -17,7 +24,9 @@ const SIDEBAR_ITEMS: SidebarItem[] = [
   { title: 'Service', href: '/service' },
 ];
 
-export default function Sidebar() {
+export default function Sidebar(props: sidebarProps) {
+  const { username, role, avatarUrl, logout } = props;
+
   const pathname = usePathname();
   const showPathname = pathname !== '/login';
 
@@ -27,23 +36,19 @@ export default function Sidebar() {
     <aside aria-label="Sidenav" className="top-0 left-0 w-64 h-screen">
       <div className="overflow-y-auto py-5 px-3 h-full border-r border-gray-200">
         <div className="px-3 py-5 flex gap-4 items-center border-b border-gray-200 mb-5">
-          <Avatar
-            isBordered
-            radius="full"
-            src="https://i.pravatar.cc/150?u=a04258114e29026708c"
-          />
-          <div>
-            <h1 className="text-md font-bold">Welcome, Admin</h1>
-            <p>Sign Out</p>
+          <Avatar isBordered radius="full" src={avatarUrl} size='lg'/>
+          <div className='logout-container'>
+            <h1 className="text-md font-bold">Welcome {username}!</h1>
+            {logout}
           </div>
         </div>
         <ul>
           {SIDEBAR_ITEMS.map((item) => (
             <li
               key={item.href}
-              className={`py-2 px-2 hover:bg-gray-200 ${
+              className={`py-2 px-2 hover:bg-success-200 rounded-lg ${
                 pathname === item.href
-                  ? 'bg-success-700 font-bold text-white'
+                  ? 'bg-success-700 font-bold text-white rounded-lg'
                   : ''
               }`}
             >

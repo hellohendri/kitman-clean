@@ -1,4 +1,7 @@
 import type { NextAuthConfig } from 'next-auth';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 export const authConfig = {
   pages: {
@@ -25,7 +28,13 @@ export const authConfig = {
 
       return true;
     },
+    async jwt({ token, account }) {
+      if (account && account.user) {
+        token.user = account.user;
+      }
+      
+      return token;
+    },
   },
-  // session: { strategy: 'jwt' },
   providers: [], // Add providers with an empty array for now
 } satisfies NextAuthConfig;

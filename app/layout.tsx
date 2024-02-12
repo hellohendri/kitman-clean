@@ -2,7 +2,8 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { Providers } from './provider';
-import Sidebar from './components/sidebar';
+// import Sidebar from './ui/sidebar';
+import SideNavbar from './components/sideNavbar';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -21,7 +22,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <Providers>
           <div className="flex flex-row">
-            <Sidebar />
+            <SideNavbar />
             {children}
           </div>
         </Providers>
