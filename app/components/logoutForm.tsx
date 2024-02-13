@@ -1,6 +1,6 @@
 'use server';
 
-import LogOutButton from '../components/logoutButton';
+import LogOutButton from './logoutButton';
 import { logoutServer } from '../lib/actions';
 
 export default async function LogoutForm() {

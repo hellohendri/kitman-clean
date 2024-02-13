@@ -1,6 +1,6 @@
 import { auth } from '@/auth';
 import Sidebar from '../ui/sidebar';
-import LogoutForm from '../ui/logoutForm';
+import LogoutForm from './logoutForm';
 import { getUserByEmail } from '../lib/actions';
 
 const generateRandomDeno = () => {

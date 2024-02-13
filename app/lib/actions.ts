@@ -66,6 +66,11 @@ export async function getUserByEmail(email: string): Promise<User | null> {
 }
 
 export async function getUserData() {
-  const users = await prisma.user.findMany();
-  return users;
+  try {
+    const users = await prisma.user.findMany();
+    return users;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
 }
