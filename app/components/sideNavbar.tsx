@@ -1,9 +1,7 @@
 import { auth } from '@/auth';
 import Sidebar from '../ui/sidebar';
-import { PrismaClient } from '@prisma/client';
 import LogoutForm from '../ui/logoutForm';
-
-const prisma = new PrismaClient();
+import { getUserByEmail } from '../lib/actions';
 
 const generateRandomDeno = () => {
     const denoList = [
@@ -34,11 +32,7 @@ export default async function SideNavbar() {
 
   const userEmail = session.user.email;
 
-  const user = await prisma.user.findUnique({
-    where: {
-      email: userEmail,
-    },
-  });
+  const user = await getUserByEmail(userEmail);
 
   if (!user) return null;
 

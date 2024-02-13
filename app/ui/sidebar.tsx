@@ -22,6 +22,7 @@ const SIDEBAR_ITEMS: SidebarItem[] = [
   { title: 'Dashboard', href: '/dashboard' },
   { title: 'Customer', href: '/customer' },
   { title: 'Service', href: '/service' },
+  { title: 'User', href: '/user' },
 ];
 
 export default function Sidebar(props: sidebarProps) {

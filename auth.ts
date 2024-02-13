@@ -22,6 +22,23 @@ async function getUser(username: string): Promise<User | undefined> {
   }
 }
 
+async function updateIsActiveTrue(id: string): Promise<User | undefined> {
+  try {
+    const user = await prisma.user.update({
+      where: {
+        id,
+      },
+      data: {
+        isActive: true
+      }
+    });
+    return user ? user : undefined;
+  } catch (error) {
+    console.error('Failed to update user status:', error);
+    throw new Error('Failed to update user status.');
+  }
+}
+
 export const { auth, signIn, signOut } = NextAuth({
   ...authConfig,
   providers: [
@@ -39,7 +56,10 @@ export const { auth, signIn, signOut } = NextAuth({
 
           const passwordMatch = await bcrypt.compare(password, user.password)
 
-          if (passwordMatch) return user;
+          if (passwordMatch) {
+            await updateIsActiveTrue(user.id);
+            return user;
+          }
         }
 
         console.log('Invalid credentials');

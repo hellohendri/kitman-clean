@@ -1,7 +1,6 @@
 import type { NextAuthConfig } from 'next-auth';
-import { PrismaClient } from '@prisma/client';
+import prisma from './app/lib/prisma';
 
-const prisma = new PrismaClient();
 
 export const authConfig = {
   pages: {
@@ -16,7 +15,7 @@ export const authConfig = {
         return Response.redirect(new URL('/dashboard', nextUrl));
       }
 
-      const protectedRoutes = ['/dashboard', '/service', '/customer'];
+      const protectedRoutes = ['/dashboard', '/service', '/customer', '/user'];
       const isProtectedRoute = protectedRoutes.some((route) =>
         nextUrl.pathname.startsWith(route),
       );
@@ -32,7 +31,7 @@ export const authConfig = {
       if (account && account.user) {
         token.user = account.user;
       }
-      
+
       return token;
     },
   },
