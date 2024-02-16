@@ -74,3 +74,19 @@ export async function getUserData() {
     return [];
   }
 }
+
+export async function getUserTable() {
+  try {
+    const users = await prisma.user.findMany({
+      select: {
+        id: true,
+        username: true,
+        email: true
+      }
+    });
+    return users;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
