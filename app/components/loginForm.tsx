@@ -72,7 +72,10 @@ function LoginButton() {
 
   return (
     <Button fullWidth color="success" size="md" aria-disabled={pending} type='submit'>
-      <span className="font-semibold text-white">Login</span>
+      {pending
+        ? <Spinner size="sm" />
+        : <span className="font-semibold text-white">Login</span>
+      }
     </Button>
   );
 }
