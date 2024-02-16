@@ -13,6 +13,7 @@ import {
   Tooltip,
   ChipProps,
   getKeyValue,
+  SortDescriptor,
 } from '@nextui-org/react';
 import { getUserData } from '../lib/actions';
 import type { User } from '@prisma/client';
@@ -27,14 +28,32 @@ const statusColorMap: Record<string, ChipProps['color']> = {
 };
 
 const columns = [
-  { name: 'NAME', uid: 'username' },
-  { name: 'ROLE', uid: 'role' },
-  { name: 'STATUS', uid: 'isActive' },
-  { name: 'PHONE', uid: 'phoneNumber' },
+  { name: 'NAME', uid: 'username', sortable: true },
+  { name: 'ROLE', uid: 'role', sortable: true },
+  { name: 'STATUS', uid: 'isActive', sortable: true },
+  { name: 'PHONE', uid: 'phoneNumber', sortable: true },
 ];
+
+const randomDeno = generateRandomDeno();
 
 export default function User() {
   const [users, setUsers] = useState<User[]>([]);
+  const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>({
+    column: 'isActive',
+    direction: 'descending',
+  });
+
+  const sortedItems = React.useMemo(() => {
+    return [...users].sort((a: User, b: User) => {
+      const first = a[sortDescriptor.column as keyof User] as unknown as number;
+      const second = b[
+        sortDescriptor.column as keyof User
+      ] as unknown as number;
+      const cmp = first < second ? -1 : first > second ? 1 : 0;
+
+      return sortDescriptor.direction === 'descending' ? -cmp : cmp;
+    });
+  }, [sortDescriptor, users]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -47,16 +66,23 @@ export default function User() {
 
   const renderCell = React.useCallback((user: User, columnKey: React.Key) => {
     const cellValue = user[columnKey as keyof User];
-    const userStatus = user.isActive ? 'Active' : 'Offline';
+    let userFullName = user.firstName ? user.firstName : '';
+
+    if (user.firstName && user.lastName) {
+      userFullName = user.firstName + ' ' + user.lastName;
+    }
+
+    const userStatus: String = user.isActive ? 'Active' : 'Offline';
+    const userAvatar = user.avatarUrl ? user.avatarUrl : randomDeno;
 
     switch (columnKey) {
       case 'username': {
         return (
           <NextUIUser
-            name={user.username}
+            name={userFullName}
             description={user.email}
             avatarProps={{
-              src: 'https://avatars.githubusercontent.com/u/30373425?v=4',
+              src: userAvatar,
             }}
           />
         );
@@ -70,9 +96,14 @@ export default function User() {
       }
       case 'isActive': {
         return (
-          <div className="flex flex-col">
-            <p className="text-bold text-sm">{userStatus}</p>
-          </div>
+          <Chip
+            className="capitalize"
+            color={statusColorMap[user.isActive.toString()]}
+            size="sm"
+            variant="flat"
+          >
+            {userStatus}
+          </Chip>
         );
       }
       case 'phoneNumber': {
@@ -97,13 +128,17 @@ export default function User() {
   return (
     <main className="px-5 py-5">
       <h1 className="text-2xl mb-5 font-bold">User Management</h1>
-      <Table aria-label="Users table">
+      <Table
+        aria-label="Users table"
+        sortDescriptor={sortDescriptor}
+        onSortChange={setSortDescriptor}
+      >
         <TableHeader columns={columns}>
           {(column) => (
-            <TableColumn key={column.uid}>{column.name}</TableColumn>
+            <TableColumn key={column.uid} allowsSorting={column.sortable}>{column.name}</TableColumn>
           )}
         </TableHeader>
-        <TableBody items={users}>
+        <TableBody emptyContent={"No users found"} items={sortedItems}>
           {(item) => (
             <TableRow key={item.id}>
               {(columnKey) => {
